@@ -1,0 +1,198 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.*;
+
+public class Translator extends JFrame implements ActionListener, ItemListener {
+	
+	
+	//set up row 1
+	JPanel row1 = new JPanel();
+	JLabel title = new JLabel("Pig Latin Translator");
+	
+	//set up row 2
+	JPanel row2 = new JPanel();
+	JLabel englishWordLabel = new JLabel("Enter English word: ", JLabel.CENTER);
+	JTextField englishWordInput = new JTextField();
+	
+	JLabel pigLatinTranslation = new JLabel("Pig Latin Translation: ", JLabel.CENTER);
+	static JTextField pigLatinWord = new JTextField();
+	
+	//set up row 3
+	JPanel row3 = new JPanel();
+	JLabel pLatinWordLabel = new JLabel("Enter Pig Latin word: ", JLabel.CENTER);
+	JTextField pLatinWordInput = new JTextField();
+	JLabel englishTranslation = new JLabel("English Translation: ", JLabel.CENTER);
+	JTextField englishWord = new JTextField();
+	
+	//set up row 4
+	JPanel row4 = new JPanel();
+	Button translateButton = new Button("Translate");
+	
+	Button clearButton = new Button("Clear");
+	
+	//create layouts
+	public Translator() {
+	
+	super("Pig Latin Translator");
+	setLookAndFeel();
+	setSize(550, 400);
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	GridLayout layout = new GridLayout(5, 1, 10, 10);
+	setLayout(layout);
+	
+	FlowLayout layout1 = new FlowLayout(FlowLayout.CENTER, 10,10);
+	row1.setLayout(layout1);
+	row1.add(title);
+	add(row1);
+		
+	GridLayout layout2 = new GridLayout(2, 2, 10, 10);
+	row2.setLayout(layout2);
+	row2.add(englishWordLabel);
+	row2.add(englishWordInput);
+	row2.add(pigLatinTranslation);
+	row2.add(pigLatinWord);
+	add(row2);
+	
+	GridLayout layout3 = new GridLayout(2, 2, 10, 10);
+	row3.setLayout(layout3);
+	row3.add(pLatinWordLabel);
+	row3.add(pLatinWordInput);
+	row3.add(englishTranslation);
+	row3.add(englishWord);
+	add(row3);
+	
+	FlowLayout layout4 = new FlowLayout(FlowLayout.CENTER, 10, 10);
+	row4.setLayout(layout4);
+	row4.add(translateButton);
+	translateButton.addActionListener(this);
+	row4.add(clearButton);
+	clearButton.addActionListener(this);
+	add(row4);
+	
+	setVisible(true);
+	}
+	
+	//Look and feel exception handling
+	
+	private void setLookAndFeel() {
+		
+		try {
+			UIManager.setLookAndFeel(
+				"com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel"
+				);
+				} catch (Exception exc) {
+					//ignore error
+				}
+			}
+			
+	//main method
+	public static void main(String[] arguments) throws IOException {
+		Translator frame = new Translator();	
+	}
+			
+
+	public void actionPerformed(ActionEvent event) {
+		String command = event.getActionCommand();
+		if (command.equals("Translate")) {
+				startTranslation();
+		}
+		if (command.equals("Clear")) {
+			clearAllFields();
+		}
+	}
+	
+	public void startTranslation() {
+		
+		String[] vowel = new String[5];
+		vowel[0] = "a";
+		vowel[1] = "e";
+		vowel[2] = "i";
+		vowel[3] = "o";
+		vowel[4] = "u";
+		
+		String[] prefix = new String[7];
+		prefix[0] = "ch";
+		prefix[1] = "gh";
+		prefix[2] = "ph";
+		prefix[3] = "rh";
+		prefix[4] = "sh";
+		prefix[5] = "th";
+		prefix[6] = "wh";
+		
+		String pLSuffix = "ay";
+		String pLVowelSuffix = "way";
+		
+		String[] qu = new String[1];
+		qu[0] = "qu";
+		
+		String englishWordEntry = englishWordInput.getText();
+		String pigLatinWordEntry = pLatinWordInput.getText();
+		
+		try {
+			if (englishWordEntry.substring(0,1).contains(vowel[0]) || 
+				englishWordEntry.substring(0,1).contains(vowel[1]) || 
+				englishWordEntry.substring(0,1).contains(vowel[2]) || 
+				englishWordEntry.substring(0,1).contains(vowel[3]) || 
+				englishWordEntry.substring(0,1).contains(vowel[4])) {
+					pigLatinWord.setText(englishWordEntry + "way");
+			
+			} else if (englishWordEntry.substring(0,2).contains(prefix[0]) || 
+				englishWordEntry.substring(0,2).contains(prefix[1]) || 
+				englishWordEntry.substring(0,2).contains(prefix[2]) || 
+				englishWordEntry.substring(0,2).contains(prefix[3]) || 
+				englishWordEntry.substring(0,2).contains(prefix[4]) ||
+				englishWordEntry.substring(0,2).contains(prefix[5]) ||
+				englishWordEntry.substring(0,2).contains(prefix[6])) {
+				pigLatinWord.setText(englishWordEntry.substring(2) + englishWordEntry.substring(0,2)  + "ay");		
+			
+			} else if (englishWordEntry.substring(0,2).contains(qu[0])) {
+				pigLatinWord.setText(englishWordEntry.substring(2) + englishWordEntry.substring(0,2)  + "ay");
+			
+			} else {
+				pigLatinWord.setText(englishWordEntry.substring(1) + englishWordEntry.substring(0,1) + "ay");
+			}
+		}
+			
+		catch (Exception e) {
+		// TODO Auto-generated catch block
+		System.out.println("your code sucks");
+		}
+		
+		try {
+			if (pigLatinWordEntry.substring(pigLatinWordEntry.length()-3).contains(pLVowelSuffix)) {
+				englishWord.setText(pigLatinWordEntry.substring(0, pigLatinWordEntry.length()-3));
+			
+			} else if (pigLatinWordEntry.substring(pigLatinWordEntry.length()-2).contains(pLSuffix)) {
+				englishWord.setText(pigLatinWordEntry.substring(pigLatinWordEntry.length()-3, pigLatinWordEntry.length()-2 ) 
+						+ pigLatinWordEntry.substring(0, pigLatinWordEntry.length() - 3));
+		} else {
+			englishWord.setText("Your word is not pig Latin");
+		}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("your code sucks");
+			}
+	}
+	public void clearAllFields() {
+		englishWordInput.setText(null);
+		pigLatinWord.setText(null);
+		pLatinWordInput.setText(null);
+		englishWord.setText(null);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+	}
+}
+
+
+	
+		
+
+
